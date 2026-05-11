@@ -1,0 +1,298 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>Edge AI — Industrial Monitor</title>
+<script src="https://cdn.jsdelivr.net/npm/echarts@5.5.0/dist/echarts.min.js"></script>
+<style>
+:root{--bg:#f5f6fa;--white:#ffffff;--tx:#1a1a2e;--tx2:#6b7280;--accent:#6366f1;--accent2:#8b5cf6;--teal:#14b8a6;--rose:#f43f5e;--amber:#f59e0b;--sky:#0ea5e9;--emerald:#10b981;--orange:#f97316;--pink:#ec4899;--bd:#e5e7eb;--shadow:0 1px 3px rgba(0,0,0,.06),0 1px 2px rgba(0,0,0,.04);--shadow-lg:0 4px 12px rgba(0,0,0,.08);--r:12px;--font:'Inter',-apple-system,BlinkMacSystemFont,system-ui,sans-serif}
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:var(--font);background:var(--bg);color:var(--tx);min-height:100vh}
+.topbar{background:var(--white);border-bottom:1px solid var(--bd);padding:.8rem 2rem;display:flex;justify-content:space-between;align-items:center;position:sticky;top:0;z-index:100;box-shadow:var(--shadow)}
+.topbar h1{font-size:1.1rem;font-weight:700;background:linear-gradient(135deg,var(--accent),var(--accent2));-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+.topbar .right{display:flex;gap:1rem;align-items:center;font-size:.75rem;color:var(--tx2)}
+.live-dot{width:8px;height:8px;border-radius:50%;background:var(--emerald);animation:pulse 2s infinite}
+@keyframes pulse{0%,100%{box-shadow:0 0 0 0 rgba(16,185,129,.4)}70%{box-shadow:0 0 0 6px rgba(16,185,129,0)}}
+
+.container{max-width:1400px;margin:0 auto;padding:1.25rem 2rem}
+.section-title{font-size:.7rem;text-transform:uppercase;letter-spacing:.1em;color:var(--tx2);font-weight:600;margin:1.5rem 0 .75rem;padding-left:.25rem}
+.section-title:first-child{margin-top:0}
+
+/* Sensor boxes */
+.sensor-row{display:grid;grid-template-columns:repeat(6,1fr);gap:.75rem}
+.sensor-box{background:var(--white);border-radius:var(--r);padding:1.25rem 1rem;text-align:center;box-shadow:var(--shadow);border-top:3px solid var(--accent);transition:transform .2s,box-shadow .2s}
+.sensor-box:hover{transform:translateY(-2px);box-shadow:var(--shadow-lg)}
+.sensor-box .icon{font-size:1.5rem;margin-bottom:.4rem}
+.sensor-box .value{font-size:1.8rem;font-weight:800;line-height:1.2}
+.sensor-box .label{font-size:.65rem;text-transform:uppercase;letter-spacing:.06em;color:var(--tx2);margin-top:.3rem;font-weight:500}
+.sensor-box.temp{border-color:var(--rose)}.sensor-box.temp .value{color:var(--rose)}
+.sensor-box.hum{border-color:var(--sky)}.sensor-box.hum .value{color:var(--sky)}
+.sensor-box.vib{border-color:var(--amber)}.sensor-box.vib .value{color:var(--amber)}
+.sensor-box.cur{border-color:var(--accent)}.sensor-box.cur .value{color:var(--accent)}
+.sensor-box.smoke{border-color:var(--orange)}.sensor-box.smoke .value{color:var(--orange)}
+.sensor-box.sound{border-color:var(--pink)}.sensor-box.sound .value{color:var(--pink)}
+
+/* Cards */
+.cards{display:grid;grid-template-columns:repeat(3,1fr);gap:.75rem}
+.card{background:var(--white);border-radius:var(--r);padding:1.25rem;box-shadow:var(--shadow)}
+.card-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:.75rem}
+.card-header h3{font-size:.8rem;font-weight:600;color:var(--tx)}
+.card-header .badge{font-size:.6rem;padding:.2rem .5rem;border-radius:4px;font-weight:600}
+.badge-ok{background:#d1fae5;color:#065f46}
+.badge-warn{background:#fef3c7;color:#92400e}
+.badge-err{background:#fee2e2;color:#991b1b}
+.badge-info{background:#e0e7ff;color:#3730a3}
+
+.chart-container{width:100%;height:240px}
+.chart-sm{height:180px}
+
+/* AI Panel */
+.ai-panel{background:linear-gradient(135deg,#ede9fe,#e0e7ff);border:1px solid #c7d2fe;border-radius:var(--r);padding:1.25rem}
+.ai-panel h3{color:var(--accent);font-size:.85rem;margin-bottom:.75rem}
+.ai-item{padding:.5rem 0;border-bottom:1px solid #c7d2fe;font-size:.8rem}
+.ai-item:last-child{border:none}
+.ai-item .key{font-size:.65rem;text-transform:uppercase;letter-spacing:.05em;color:var(--accent2);font-weight:600}
+.ai-item .val{margin-top:.15rem;color:var(--tx)}
+
+/* Health bars */
+.hbar{display:flex;align-items:center;gap:.5rem;margin:.4rem 0;font-size:.75rem}
+.hbar-track{flex:1;height:6px;background:#e5e7eb;border-radius:3px;overflow:hidden}
+.hbar-fill{height:100%;border-radius:3px;transition:width .6s ease}
+.hbar-label{width:40px;text-align:right;font-weight:600;font-size:.7rem}
+
+/* Alerts */
+.alert-item{display:flex;gap:.5rem;align-items:center;padding:.5rem 0;border-bottom:1px solid var(--bd);font-size:.78rem}
+.alert-item:last-child{border:none}
+.alert-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0}
+.alert-dot.crit{background:var(--rose)}.alert-dot.high{background:var(--orange)}.alert-dot.warn{background:var(--amber)}.alert-dot.info{background:var(--sky)}
+
+/* Devices */
+.dev-item{display:flex;justify-content:space-between;align-items:center;padding:.4rem 0;border-bottom:1px solid var(--bd);font-size:.78rem}
+.dev-item:last-child{border:none}
+.dev-status{width:7px;height:7px;border-radius:50%;margin-right:.4rem;display:inline-block}
+.dev-on{background:var(--emerald)}.dev-off{background:#d1d5db}
+
+.col2{grid-column:span 2}
+@media(max-width:1100px){.sensor-row{grid-template-columns:repeat(3,1fr)}.cards{grid-template-columns:repeat(2,1fr)}.col2{grid-column:span 1}}
+@media(max-width:700px){.sensor-row{grid-template-columns:repeat(2,1fr)}.cards{grid-template-columns:1fr}.container{padding:1rem}}
+</style>
+</head>
+<body>
+<div class="topbar">
+    <h1>⚡ Edge AI — Industrial Monitor</h1>
+    <div class="right">
+        <div class="live-dot"></div>
+        <span id="status">Connecting...</span>
+        <span id="clock"></span>
+    </div>
+</div>
+
+<div class="container">
+    <!-- Live Sensor Readings -->
+    <div class="section-title">Live Sensor Readings</div>
+    <div class="sensor-row">
+        <div class="sensor-box temp"><div class="icon">🌡️</div><div class="value" id="v-temp">—</div><div class="label">Temperature °C</div></div>
+        <div class="sensor-box hum"><div class="icon">💧</div><div class="value" id="v-hum">—</div><div class="label">Humidity %</div></div>
+        <div class="sensor-box vib"><div class="icon">📳</div><div class="value" id="v-vib">—</div><div class="label">Vibration g</div></div>
+        <div class="sensor-box cur"><div class="icon">⚡</div><div class="value" id="v-cur">—</div><div class="label">Current A</div></div>
+        <div class="sensor-box smoke"><div class="icon">🔥</div><div class="value" id="v-smoke">OK</div><div class="label">Smoke (MQ2)</div></div>
+        <div class="sensor-box sound"><div class="icon">🔊</div><div class="value" id="v-sound">OK</div><div class="label">Sound (Mic)</div></div>
+    </div>
+
+    <!-- Charts + AI -->
+    <div class="section-title">Analytics</div>
+    <div class="cards">
+        <div class="card col2">
+            <div class="card-header"><h3>Telemetry Trend</h3><span class="badge badge-info">Real-time</span></div>
+            <div class="chart-container" id="chart-main"></div>
+        </div>
+        <div class="card ai-panel">
+            <h3>🧠 AI Inference</h3>
+            <div id="ai-content">
+                <div class="ai-item"><div class="key">Fault Status</div><div class="val" id="ai-fault">Normal</div></div>
+                <div class="ai-item"><div class="key">Confidence</div><div class="val" id="ai-conf">—</div></div>
+                <div class="ai-item"><div class="key">Health Score</div><div class="val" id="ai-health">—</div></div>
+                <div class="ai-item"><div class="key">RUL Estimate</div><div class="val" id="ai-rul">—</div></div>
+                <div class="ai-item"><div class="key">Recommendation</div><div class="val" id="ai-rec">Awaiting data...</div></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Vibration + Edge Health + Alerts -->
+    <div class="section-title">System</div>
+    <div class="cards">
+        <div class="card">
+            <div class="card-header"><h3>Vibration XYZ</h3><span class="badge badge-ok">ADXL345</span></div>
+            <div class="chart-container chart-sm" id="chart-vib"></div>
+        </div>
+        <div class="card">
+            <div class="card-header"><h3>Edge Device</h3><span class="badge badge-info">RPi 3B+</span></div>
+            <div class="hbar"><span>CPU</span><div class="hbar-track"><div class="hbar-fill" id="bar-cpu" style="width:0%;background:var(--accent)"></div></div><div class="hbar-label" id="lbl-cpu">—</div></div>
+            <div class="hbar"><span>RAM</span><div class="hbar-track"><div class="hbar-fill" id="bar-ram" style="width:0%;background:var(--accent2)"></div></div><div class="hbar-label" id="lbl-ram">—</div></div>
+            <div class="hbar"><span>Disk</span><div class="hbar-track"><div class="hbar-fill" id="bar-disk" style="width:0%;background:var(--teal)"></div></div><div class="hbar-label" id="lbl-disk">—</div></div>
+            <div style="margin-top:.75rem;font-size:.75rem;color:var(--tx2)" id="edge-info">🌡️ — | Uptime: —</div>
+        </div>
+        <div class="card">
+            <div class="card-header"><h3>Alerts</h3><span class="badge badge-warn" id="alert-badge">0</span></div>
+            <div id="alert-list">
+                <div class="alert-item"><div class="alert-dot info"></div><span>System online — waiting for sensor data</span></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Devices -->
+    <div class="section-title">Devices</div>
+    <div class="cards">
+        <div class="card">
+            <div class="card-header"><h3>Registered Devices</h3></div>
+            <div id="dev-list">
+                <div class="dev-item"><span><span class="dev-status dev-off"></span>MOTOR_001</span><span style="color:var(--tx2);font-size:.7rem">waiting</span></div>
+                <div class="dev-item"><span><span class="dev-status dev-off"></span>MOTOR_002</span><span style="color:var(--tx2);font-size:.7rem">waiting</span></div>
+                <div class="dev-item"><span><span class="dev-status dev-off"></span>PUMP_001</span><span style="color:var(--tx2);font-size:.7rem">waiting</span></div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+(function(){
+const N=60,S={ts:[],temp:[],hum:[],vib:[],cur:[],vx:[],vy:[],vz:[]};
+function p(a,v){a.push(v);if(a.length>N)a.shift()}
+
+const ax={axisLine:{lineStyle:{color:'#e5e7eb'}},axisLabel:{color:'#6b7280',fontSize:10},splitLine:{lineStyle:{color:'#f3f4f6'}}};
+
+const cM=echarts.init(document.getElementById('chart-main'));
+cM.setOption({backgroundColor:'transparent',grid:{top:35,right:10,bottom:25,left:45},legend:{data:['Temp','Humidity','Vibration','Current'],top:0,textStyle:{color:'#6b7280',fontSize:10}},xAxis:{type:'category',data:[],boundaryGap:false,...ax},yAxis:{type:'value',...ax},series:[
+{name:'Temp',type:'line',smooth:true,data:[],symbol:'none',lineStyle:{width:2.5,color:'#f43f5e'},areaStyle:{color:{type:'linear',x:0,y:0,x2:0,y2:1,colorStops:[{offset:0,color:'rgba(244,63,94,.15)'},{offset:1,color:'rgba(244,63,94,0)'}]}}},
+{name:'Humidity',type:'line',smooth:true,data:[],symbol:'none',lineStyle:{width:2,color:'#0ea5e9'}},
+{name:'Vibration',type:'line',smooth:true,data:[],symbol:'none',lineStyle:{width:2,color:'#f59e0b'}},
+{name:'Current',type:'line',smooth:true,data:[],symbol:'none',lineStyle:{width:2,color:'#6366f1'}}
+],animation:false});
+
+const cV=echarts.init(document.getElementById('chart-vib'));
+cV.setOption({backgroundColor:'transparent',grid:{top:30,right:10,bottom:25,left:40},legend:{data:['X','Y','Z'],top:0,textStyle:{color:'#6b7280',fontSize:10}},xAxis:{type:'category',data:[],boundaryGap:false,...ax},yAxis:{type:'value',...ax},series:[
+{name:'X',type:'line',smooth:true,data:[],symbol:'none',lineStyle:{width:1.5,color:'#6366f1'}},
+{name:'Y',type:'line',smooth:true,data:[],symbol:'none',lineStyle:{width:1.5,color:'#8b5cf6'}},
+{name:'Z',type:'line',smooth:true,data:[],symbol:'none',lineStyle:{width:1.5,color:'#14b8a6'}}
+],animation:false});
+
+window.addEventListener('resize',()=>{cM.resize();cV.resize()});
+
+function updTel(d){
+const t=d.telemetry||d;
+const tm=new Date((d.timestamp||Date.now()/1000)*1000).toLocaleTimeString();
+const temp=t.temperature!=null?t.temperature:null;
+const hum=t.humidity!=null?t.humidity:null;
+const vib=t.vibration?(t.vibration.magnitude||0):null;
+const cur=t.current!=null?t.current:null;
+const vx=t.vibration?(t.vibration.x||0):0;
+const vy=t.vibration?(t.vibration.y||0):0;
+const vz=t.vibration?(t.vibration.z||0):0;
+p(S.ts,tm);p(S.temp,temp||0);p(S.hum,hum||0);p(S.vib,vib||0);p(S.cur,cur||0);p(S.vx,vx);p(S.vy,vy);p(S.vz,vz);
+
+document.getElementById('v-temp').textContent=temp!=null?temp.toFixed(1):'—';
+document.getElementById('v-hum').textContent=hum!=null?hum.toFixed(1):'—';
+document.getElementById('v-vib').textContent=vib!=null?vib.toFixed(2):'—';
+document.getElementById('v-cur').textContent=cur!=null?cur.toFixed(2):'—';
+document.getElementById('v-smoke').textContent=t.smoke?'⚠ ALERT':'OK';
+document.getElementById('v-smoke').style.color=t.smoke?'var(--rose)':'';
+document.getElementById('v-sound').textContent=t.sound?'⚠ ALERT':'OK';
+document.getElementById('v-sound').style.color=t.sound?'var(--rose)':'';
+
+cM.setOption({xAxis:{data:S.ts},series:[{data:S.temp},{data:S.hum},{data:S.vib},{data:S.cur}]});
+cV.setOption({xAxis:{data:S.ts},series:[{data:S.vx},{data:S.vy},{data:S.vz}]});
+}
+
+function updAI(d){
+const f=d.fault_class||'normal',c=d.confidence||0,h=d.health_scores?d.health_scores.overall:100,rul=d.rul_hours;
+const el=document.getElementById('ai-fault');
+el.textContent=f.replace(/_/g,' ').replace(/\b\w/g,x=>x.toUpperCase());
+el.style.color=f==='normal'?'var(--emerald)':'var(--rose)';
+document.getElementById('ai-conf').textContent=(c*100).toFixed(0)+'%';
+document.getElementById('ai-health').textContent=h.toFixed(0)+'%';
+document.getElementById('ai-rul').textContent=rul?rul.toFixed(0)+' hours':'Healthy — no degradation';
+let rec='All parameters nominal. No action required.';
+if(f!=='normal'){rec=d.root_cause||'Investigate '+el.textContent;if(rul)rec+='. Schedule maintenance within '+rul.toFixed(0)+'h.';}
+document.getElementById('ai-rec').textContent=rec;
+}
+
+function updAlert(d){
+const list=document.getElementById('alert-list');
+const s=(d.severity||'INFO').toLowerCase();
+const cls=s==='critical'?'crit':s==='high'?'high':s==='warning'?'warn':'info';
+const div=document.createElement('div');div.className='alert-item';
+div.innerHTML='<div class="alert-dot '+cls+'"></div><span>'+(d.message||d.alert_type)+'</span>';
+list.prepend(div);
+if(list.children.length>15)list.removeChild(list.lastChild);
+const cnt=list.querySelectorAll('.crit,.high,.warn').length;
+document.getElementById('alert-badge').textContent=cnt;
+}
+
+// WebSocket — real-time push from server
+let wsConnected=false;
+function ws(){
+const proto=location.protocol==='https:'?'wss:':'ws:';
+const sock=new WebSocket(proto+'//'+location.host+'/ws/telemetry');
+sock.onopen=()=>{wsConnected=true;document.getElementById('status').textContent='Live (WebSocket)';document.getElementById('status').style.color='#10b981'};
+sock.onmessage=(e)=>{try{const m=JSON.parse(e.data);if(m.type==='telemetry')updTel(m.data);else if(m.type==='inference')updAI(m.data);else if(m.type==='alert')updAlert(m.data)}catch(x){}};
+sock.onclose=()=>{wsConnected=false;document.getElementById('status').textContent='Polling (3s)';document.getElementById('status').style.color='#f59e0b';setTimeout(ws,5000)};
+sock.onerror=()=>sock.close();
+}
+ws();
+
+// HTTP polling — primary data source, fetches from DynamoDB via cloud endpoint
+const API_KEY = window.__EDGE_API_KEY__ || 'your-api-key-here';
+const hdrs={'X-API-Key':API_KEY};
+
+async function pollLive(){
+try{
+const r=await fetch('/api/v1/cloud/telemetry/current',{headers:hdrs});
+if(!r.ok)return;
+const data=await r.json();
+if(data.devices){
+for(const[devId,dev] of Object.entries(data.devices)){
+if(dev.status==='live'||dev.status==='stale'){
+updTel({timestamp:dev.timestamp,device_id:devId,telemetry:dev.telemetry||{}});
+}}}
+}catch(e){}}
+
+setInterval(pollLive,3000);
+pollLive();
+
+// Poll edge health every 10s
+async function pollHealth(){try{
+const r=await fetch('/api/v1/health/edge',{headers:hdrs});
+if(!r.ok)return;const h=await r.json();
+if(h.cpu_percent!=null){
+document.getElementById('bar-cpu').style.width=h.cpu_percent+'%';document.getElementById('lbl-cpu').textContent=h.cpu_percent.toFixed(0)+'%';
+document.getElementById('bar-ram').style.width=h.ram_percent+'%';document.getElementById('lbl-ram').textContent=h.ram_percent.toFixed(0)+'%';
+document.getElementById('bar-disk').style.width=h.disk_percent+'%';document.getElementById('lbl-disk').textContent=h.disk_percent.toFixed(0)+'%';
+const t=h.temperature_celsius?h.temperature_celsius.toFixed(1)+'°C':'—';
+const u=h.uptime_seconds?(h.uptime_seconds/3600).toFixed(1)+'h':'—';
+document.getElementById('edge-info').textContent='🌡️ '+t+' | Uptime: '+u;
+}}catch(e){}}
+setInterval(pollHealth,10000);pollHealth();
+
+// Poll alerts every 5s
+async function pollAlerts(){try{
+const r=await fetch('/api/v1/alerts/counts',{headers:hdrs});
+if(!r.ok)return;const c=await r.json();
+const total=(c.CRITICAL||0)+(c.HIGH||0)+(c.WARNING||0);
+document.getElementById('alert-badge').textContent=total;
+}catch(e){}}
+setInterval(pollAlerts,5000);
+
+// Poll inference every 10s
+async function pollInference(){try{
+const r=await fetch('/api/v1/inference/MOTOR_001',{headers:hdrs});
+if(!r.ok)return;const d=await r.json();
+if(d.fault_class)updAI(d);
+}catch(e){}}
+setInterval(pollInference,10000);
+
+setInterval(()=>{document.getElementById('clock').textContent=new Date().toLocaleTimeString()},1000);
+})();
+</script>
+</body>
+</html>
