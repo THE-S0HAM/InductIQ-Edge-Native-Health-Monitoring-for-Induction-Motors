@@ -1,0 +1,41 @@
+# === Secrets & Credentials ===
+.env
+*.env
+.aws/
+credentials
+
+# === Python ===
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.venv/
+venv/
+env/
+*.egg-info/
+dist/
+build/
+
+# === IDE ===
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# === Data (keep structure, ignore generated data) ===
+data/*.db
+data/*.duckdb
+data/archives/**/*.parquet
+data/logs/*.log
+
+# === ML Models (large binary files) ===
+data/models/*.pkl
+data/models/*.onnx
+data/models/*.joblib
+
+# === OS ===
+.DS_Store
+Thumbs.db
+
+# === Local context ===
+CONTEXT.md

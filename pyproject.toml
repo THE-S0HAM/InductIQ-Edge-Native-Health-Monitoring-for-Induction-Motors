@@ -1,0 +1,28 @@
+[build-system]
+requires = ["setuptools>=68.0", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "industrial-edge-ai"
+version = "1.0.0"
+description = "Industrial Edge AI Monitoring Platform for Raspberry Pi 3B+"
+requires-python = ">=3.11"
+license = {text = "Proprietary"}
+
+[project.scripts]
+edge-platform = "edge_platform.__main__:main"
+edge-simulator = "edge_platform.simulator.motor_sim:main"
+
+[tool.setuptools.packages.find]
+include = ["edge_platform*"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+asyncio_mode = "auto"
+
+[tool.ruff]
+target-version = "py311"
+line-length = 100
+
+[tool.ruff.lint]
+select = ["E", "F", "W", "I"]

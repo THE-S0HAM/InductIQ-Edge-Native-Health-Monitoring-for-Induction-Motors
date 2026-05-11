@@ -1,0 +1,7 @@
+# Raspberry Pi sensor dependencies (install on Pi only)
+# pip install -r requirements-rpi.txt
+
+RPi.GPIO>=0.7.0
+adafruit-circuitpython-dht>=4.0.0
+adafruit-circuitpython-adxl34x>=1.12.0
+adafruit-blinka>=8.0.0

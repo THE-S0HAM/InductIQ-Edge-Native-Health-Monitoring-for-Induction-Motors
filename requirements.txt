@@ -1,0 +1,50 @@
+# Industrial Edge AI Platform - Python Dependencies
+# Compatible with Python 3.11+ on Windows/Linux/ARM64
+
+# === Core Framework ===
+fastapi>=0.110.0
+uvicorn[standard]>=0.29.0
+pydantic>=2.7.0
+pydantic-settings>=2.2.0
+
+# === MQTT ===
+aiomqtt>=2.0.0
+
+# === Database ===
+aiosqlite>=0.20.0
+
+# === Data Processing ===
+numpy>=1.26.0
+pyarrow>=15.0.0
+
+# === ML Inference ===
+scikit-learn>=1.4.0
+joblib>=1.3.0
+
+# === Serialization ===
+orjson>=3.9.0
+
+# === Monitoring ===
+psutil>=5.9.0
+
+# === Security ===
+python-multipart>=0.0.6
+
+# === Templating (Dashboard) ===
+jinja2>=3.1.0
+
+# === WebSocket ===
+websockets>=12.0
+
+# === Configuration ===
+pyyaml>=6.0
+python-dotenv>=1.0.0
+
+# === AWS Cloud ===
+boto3>=1.34.0
+
+# === Raspberry Pi Sensors (install on Pi only) ===
+# Uncomment these when deploying on Raspberry Pi:
+# RPi.GPIO>=0.7.0
+# adafruit-circuitpython-dht>=4.0.0
+# smbus2>=0.4.0
