@@ -2,7 +2,7 @@
 
 ## Overview
 
-The Industrial Edge AI Platform uses GitHub Actions for automated testing, building, and deployment. All workflows are configured to run **only on the `deploy` branch**.
+The InductIQ Platform uses GitHub Actions for automated testing, building, and deployment. All workflows are configured to run **only on the `deploy` branch**.
 
 ## Workflows
 
@@ -94,7 +94,7 @@ Actions → Deploy → Run workflow
 
 Images are pushed to GitHub Container Registry:
 ```
-ghcr.io/THE-S0HAM/IIoT-Project-No-One-Cares
+ghcr.io/THE-S0HAM/InductIQ-AI-Powered-Induction-Motor-Monitoring-System
 ```
 
 ### Tags
@@ -107,13 +107,13 @@ ghcr.io/THE-S0HAM/IIoT-Project-No-One-Cares
 
 ```bash
 # Latest from deploy branch
-docker pull ghcr.io/THE-S0HAM/IIoT-Project-No-One-Cares:deploy
+docker pull ghcr.io/THE-S0HAM/InductIQ-AI-Powered-Induction-Motor-Monitoring-System:deploy
 
 # Specific version
-docker pull ghcr.io/THE-S0HAM/IIoT-Project-No-One-Cares:v1.0.0
+docker pull ghcr.io/THE-S0HAM/InductIQ-AI-Powered-Induction-Motor-Monitoring-System:v1.0.0
 
 # Specific commit
-docker pull ghcr.io/THE-S0HAM/IIoT-Project-No-One-Cares:deploy-abc123def
+docker pull ghcr.io/THE-S0HAM/InductIQ-AI-Powered-Induction-Motor-Monitoring-System:deploy-abc123def
 ```
 
 ## Testing
@@ -164,7 +164,7 @@ docker-compose down
 
 ```bash
 # Pull latest image
-docker pull ghcr.io/THE-S0HAM/IIoT-Project-No-One-Cares:deploy
+docker pull ghcr.io/THE-S0HAM/InductIQ-AI-Powered-Induction-Motor-Monitoring-System:deploy
 
 # Run container
 docker run -d \
@@ -172,7 +172,7 @@ docker run -d \
   -p 8420:8420 \
   -v edge-data:/app/data \
   -e EDGE_MQTT_HOST=mosquitto \
-  ghcr.io/THE-S0HAM/IIoT-Project-No-One-Cares:deploy
+  ghcr.io/THE-S0HAM/InductIQ-AI-Powered-Induction-Motor-Monitoring-System:deploy
 
 # With docker-compose
 docker-compose -f docker-compose.yml up -d
@@ -205,22 +205,22 @@ env:
 
 ### GitHub Actions Dashboard
 
-- View workflow runs: https://github.com/THE-S0HAM/IIoT-Project-No-One-Cares/actions
+- View workflow runs: https://github.com/THE-S0HAM/InductIQ-AI-Powered-Induction-Motor-Monitoring-System/actions
 - Filter by workflow: CI or Deploy
 - View logs for each job
 
 ### Codecov Integration
 
 - Coverage reports uploaded automatically
-- View at: https://codecov.io/gh/THE-S0HAM/IIoT-Project-No-One-Cares
+- View at: https://codecov.io/gh/THE-S0HAM/InductIQ-AI-Powered-Induction-Motor-Monitoring-System
 
 ### Status Badges
 
 Add to README.md:
 
 ```markdown
-![CI](https://github.com/THE-S0HAM/IIoT-Project-No-One-Cares/workflows/CI/badge.svg?branch=deploy)
-![Deploy](https://github.com/THE-S0HAM/IIoT-Project-No-One-Cares/workflows/Deploy/badge.svg?branch=deploy)
+![CI](https://github.com/THE-S0HAM/InductIQ-AI-Powered-Induction-Motor-Monitoring-System/workflows/CI/badge.svg?branch=deploy)
+![Deploy](https://github.com/THE-S0HAM/InductIQ-AI-Powered-Induction-Motor-Monitoring-System/workflows/Deploy/badge.svg?branch=deploy)
 ```
 
 ## Troubleshooting
@@ -263,7 +263,7 @@ docker build --no-cache -t edge-ai:test .
 echo $GITHUB_TOKEN | docker login ghcr.io -u USERNAME --password-stdin
 
 # Verify credentials
-docker pull ghcr.io/THE-S0HAM/IIoT-Project-No-One-Cares:deploy
+docker pull ghcr.io/THE-S0HAM/InductIQ-AI-Powered-Induction-Motor-Monitoring-System:deploy
 ```
 
 ## Best Practices

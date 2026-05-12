@@ -1,5 +1,5 @@
 [Unit]
-Description=Industrial Edge AI Platform
+Description=InductIQ Platform
 Documentation=https://github.com/edge-ai/platform
 After=network.target mosquitto.service
 Wants=mosquitto.service

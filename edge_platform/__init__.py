@@ -1,5 +1,5 @@
 """
-Industrial Edge AI Monitoring Platform
+InductIQ Monitoring Platform
 Production-grade predictive maintenance for Raspberry Pi 3B+
 """
 

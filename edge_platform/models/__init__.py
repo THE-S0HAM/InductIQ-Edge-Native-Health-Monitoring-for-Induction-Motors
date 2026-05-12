@@ -1,1 +1,1 @@
-"""Domain models for the Industrial Edge AI Platform."""
+"""Domain models for the InductIQ Platform."""

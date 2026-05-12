@@ -38,7 +38,7 @@ def create_app(config: PlatformConfig, platform: Any = None) -> FastAPI:
         logger.info("API server shutting down...")
 
     app = FastAPI(
-        title="Industrial Edge AI Platform",
+        title="InductIQ Platform",
         description="Edge-native predictive maintenance API",
         version=config.version,
         lifespan=lifespan,

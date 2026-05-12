@@ -1,4 +1,4 @@
-# Industrial Edge AI Platform - Python Dependencies
+# InductIQ Platform - Python Dependencies
 # Compatible with Python 3.11+ on Windows/Linux/ARM64
 
 # === Core Framework ===

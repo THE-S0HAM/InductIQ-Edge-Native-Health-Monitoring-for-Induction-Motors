@@ -1,1 +1,1 @@
-"""Test suite for Industrial Edge AI Platform."""
+"""Test suite for InductIQ Platform."""

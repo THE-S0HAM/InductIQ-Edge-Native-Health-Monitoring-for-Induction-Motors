@@ -1,4 +1,4 @@
-# Multi-stage build for Industrial Edge AI Platform
+# Multi-stage build for InductIQ Platform
 # Optimized for ARM64 (Raspberry Pi) and x86_64
 
 # Stage 1: Builder
@@ -25,7 +25,7 @@ RUN pip install --upgrade pip wheel setuptools && \
 FROM python:3.11-slim
 
 LABEL maintainer="Edge AI Engineering"
-LABEL description="Industrial Edge AI Monitoring Platform"
+LABEL description="InductIQ Monitoring Platform"
 LABEL version="1.0.0"
 
 WORKDIR /app

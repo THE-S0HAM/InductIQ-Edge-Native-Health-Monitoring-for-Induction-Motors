@@ -3,9 +3,9 @@ requires = ["setuptools>=68.0", "wheel"]
 build-backend = "setuptools.build_meta"
 
 [project]
-name = "industrial-edge-ai"
+name = "inductiq"
 version = "1.0.0"
-description = "Industrial Edge AI Monitoring Platform for Raspberry Pi 3B+"
+description = "InductIQ Monitoring Platform for Raspberry Pi 3B+"
 requires-python = ">=3.11"
 license = {text = "Proprietary"}
 

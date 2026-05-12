@@ -67,7 +67,7 @@ class EdgePlatform:
     async def start(self) -> None:
         """Start all platform components in correct order."""
         logger.info("=" * 60)
-        logger.info("  Industrial Edge AI Platform v%s", self.config.version)
+        logger.info("  InductIQ Platform v%s", self.config.version)
         logger.info("  Site: %s", self.config.site_id)
         logger.info("=" * 60)
         

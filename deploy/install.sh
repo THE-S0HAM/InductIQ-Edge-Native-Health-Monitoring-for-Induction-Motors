@@ -1,5 +1,5 @@
 #!/bin/bash
-# Industrial Edge AI Platform - Installation Script
+# InductIQ Platform - Installation Script
 # Target: Raspberry Pi 3B+ running Raspberry Pi OS Lite (64-bit)
 set -euo pipefail
 
@@ -10,7 +10,7 @@ CONFIG_DIR="/etc/edge-ai"
 SERVICE_USER="edgeai"
 
 echo "============================================"
-echo "  Industrial Edge AI Platform Installer"
+echo "  InductIQ Platform Installer"
 echo "  Target: Raspberry Pi 3B+"
 echo "============================================"
 

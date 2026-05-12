@@ -48,7 +48,7 @@ def test_get_config_defaults():
     """Test config loading with defaults."""
     config = get_config()
     
-    assert config.name == "Industrial Edge AI"
+    assert config.name == "InductIQ"
     assert config.version == "1.0.0"
     assert config.site_id == "SITE_001"
     assert config.api.port == 8420

@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-Industrial Edge AI Platform - One-Click Launcher
+InductIQ Platform - One-Click Launcher
 =================================================
 Usage:
     python run.py
@@ -278,7 +278,7 @@ async def run_platform():
     mqtt_topic = f"iiot/site/{config.site_id}/device/+/telemetry"
     print(f"""
 {'=' * 60}
-  Industrial Edge AI Platform is LIVE
+  InductIQ Platform is LIVE
 {'=' * 60}
 
   Dashboard:  http://localhost:{port}
@@ -323,7 +323,7 @@ def main():
     """Single entry point — setup and launch."""
     print()
     print("=" * 60)
-    print("  Industrial Edge AI Platform - Startup")
+    print("  InductIQ Platform - Startup")
     print("=" * 60)
     print()
 

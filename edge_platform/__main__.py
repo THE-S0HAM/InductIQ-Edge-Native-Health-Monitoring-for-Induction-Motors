@@ -1,5 +1,5 @@
 """
-Entry point for the Industrial Edge AI Platform.
+Entry point for the InductIQ Platform.
 Can be run via: python -m edge_platform
 For the full auto-setup experience, use run.py instead.
 """

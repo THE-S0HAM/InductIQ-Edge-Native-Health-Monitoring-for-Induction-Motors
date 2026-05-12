@@ -1,9 +1,9 @@
-# Industrial Edge AI Platform Configuration
+# InductIQ Platform Configuration
 # Self-contained local development / production config
 # All paths are relative to project root (resolved at runtime)
 
 platform:
-  name: "Industrial Edge AI"
+  name: "InductIQ"
   version: "1.0.0"
   site_id: "SITE_001"
   environment: "production"

@@ -177,7 +177,7 @@ class APIConfig(BaseModel):
 
 class PlatformConfig(BaseModel):
     """Root configuration model for the entire platform."""
-    name: str = "Industrial Edge AI"
+    name: str = "InductIQ"
     version: str = "1.0.0"
     site_id: str = "SITE_001"
     environment: str = "production"

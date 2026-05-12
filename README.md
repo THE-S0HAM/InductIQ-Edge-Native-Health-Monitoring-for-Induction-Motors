@@ -1,4 +1,4 @@
-# InduxSense — AI-Powered Induction Motor Monitoring System
+# InductIQ: Edge-Native Health Monitoring for Induction Motors
 
 ### Industrial IoT Edge Monitoring Platform
 
@@ -6,9 +6,9 @@
 
 ---
 
-## What is InduxSense?
+## What is InductIQ?
 
-InduxSense is an edge-native Industrial IoT platform that collects sensor data from physical hardware (motors, pumps, machines), runs AI inference locally on a Raspberry Pi, and streams live data to a web dashboard backed by AWS DynamoDB.
+InductIQ is an edge-native Industrial IoT platform that collects sensor data from physical hardware (motors, pumps, machines), runs AI inference locally on a Raspberry Pi, and streams live data to a web dashboard backed by AWS DynamoDB.
 
 Built as a final-year engineering project to demonstrate end-to-end IIoT architecture — from GPIO sensors to cloud storage to a live browser dashboard.
 
@@ -82,8 +82,8 @@ Built as a final-year engineering project to demonstrate end-to-end IIoT archite
 
 ```bash
 # 1. Clone the repo
-git clone https://github.com/your-username/InduxSense.git
-cd InduxSense
+git clone https://github.com/your-username/InductIQ.git
+cd InductIQ
 
 # 2. Create virtual environment
 python -m venv venv
@@ -147,7 +147,7 @@ Your IAM user needs this policy:
 ## Project Structure
 
 ```
-InduxSense/
+InductIQ/
 ├── run.py                        # One-click launcher
 ├── edge_platform/
 │   ├── sensors/collector.py      # GPIO sensor reading + MQTT publish
