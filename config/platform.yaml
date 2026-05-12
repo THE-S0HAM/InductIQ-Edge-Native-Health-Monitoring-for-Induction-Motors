@@ -1,0 +1,121 @@
+# Industrial Edge AI Platform Configuration
+# Self-contained local development / production config
+# All paths are relative to project root (resolved at runtime)
+
+platform:
+  name: "Industrial Edge AI"
+  version: "1.0.0"
+  site_id: "SITE_001"
+  environment: "production"
+
+mqtt:
+  broker_host: "localhost"
+  broker_port: 1883
+  keepalive: 60
+  qos: 1
+  topic_prefix: "iiot/site/SITE_001"
+  reconnect_interval: 5
+  max_reconnect_attempts: 0
+  buffer_size: 1000
+
+api:
+  host: "0.0.0.0"
+  port: 8420
+  workers: 1
+  reload: false
+  api_key_enabled: true
+  rate_limit_per_minute: 120
+  cors_origins: ["*"]
+
+storage:
+  sqlite:
+    path: "data/hot.db"
+    wal_mode: true
+    journal_size_limit: 67108864
+    cache_size: -8000
+    busy_timeout: 5000
+  duckdb:
+    path: "data/analytics.duckdb"
+    memory_limit: "128MB"
+    threads: 2
+  parquet:
+    archive_dir: "data/archives"
+    compression: "snappy"
+    row_group_size: 10000
+
+retention:
+  hot_hours: 24
+  warm_days: 7
+  cold_days: 90
+  archive_days: 365
+  cleanup_interval_minutes: 60
+
+inference:
+  enabled: true
+  model_dir: "data/models"
+  batch_size: 5
+  inference_interval_seconds: 30
+  confidence_threshold: 0.7
+  unknown_fault_threshold: 0.5
+  max_concurrent_inferences: 1
+
+  stages:
+    statistical:
+      enabled: true
+      z_score_threshold: 3.0
+      ewma_alpha: 0.3
+      window_size: 60
+    classification:
+      enabled: true
+      model_type: "randomforest"
+      model_file: "fault_classifier.pkl"
+    predictive:
+      enabled: true
+      degradation_window_hours: 168
+      rul_model_file: "rul_estimator.pkl"
+    unknown_fault:
+      enabled: true
+      isolation_contamination: 0.1
+      min_cluster_samples: 5
+
+alerts:
+  enabled: true
+  cooldown_seconds: 300
+  dedup_window_seconds: 60
+  escalation_delay_seconds: 900
+  max_active_alerts: 100
+  severity_levels:
+    - INFO
+    - WARNING
+    - HIGH
+    - CRITICAL
+
+health:
+  monitor_interval_seconds: 60
+  cpu_warning_percent: 80
+  cpu_critical_percent: 95
+  ram_warning_percent: 75
+  ram_critical_percent: 90
+  disk_warning_percent: 80
+  disk_critical_percent: 95
+  temperature_warning_celsius: 70
+  temperature_critical_celsius: 80
+
+sensors:
+  sampling_interval_seconds: 5
+  adaptive_sampling: true
+  min_interval_seconds: 1
+  max_interval_seconds: 60
+  buffer_size: 100
+
+devices:
+  heartbeat_interval_seconds: 60
+  heartbeat_timeout_seconds: 180
+  auto_discovery: true
+
+logging:
+  level: "WARNING"
+  file: "data/logs/platform.log"
+  max_size_mb: 10
+  backup_count: 3
+  format: "%(asctime)s [%(levelname)s] %(name)s: %(message)s"

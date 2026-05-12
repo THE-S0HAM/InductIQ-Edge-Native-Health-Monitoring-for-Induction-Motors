@@ -1,0 +1,55 @@
+version: '3.8'
+
+services:
+  mosquitto:
+    image: eclipse-mosquitto:latest
+    container_name: edge-mosquitto
+    ports:
+      - "1883:1883"
+      - "9001:9001"
+    volumes:
+      - ./config/mosquitto.conf:/mosquitto/config/mosquitto.conf:ro
+      - mosquitto_data:/mosquitto/data
+      - mosquitto_logs:/mosquitto/log
+    environment:
+      - TZ=UTC
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "mosquitto_sub", "-h", "localhost", "-t", "test"]
+      interval: 10s
+      timeout: 5s
+      retries: 3
+
+  platform:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: edge-platform
+    ports:
+      - "8420:8420"
+    volumes:
+      - ./data:/app/data
+      - ./config:/app/config:ro
+    environment:
+      - EDGE_CONFIG_PATH=config/platform.yaml
+      - EDGE_MQTT_HOST=mosquitto
+      - EDGE_MQTT_PORT=1883
+      - PYTHONUNBUFFERED=1
+    depends_on:
+      mosquitto:
+        condition: service_healthy
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8420/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+
+volumes:
+  mosquitto_data:
+  mosquitto_logs:
+
+networks:
+  default:
+    name: edge-network

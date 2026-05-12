@@ -1,0 +1,11 @@
+[Unit]
+Description=Edge AI Data Archival Timer
+Documentation=Runs hourly data archival from hot to cold storage
+
+[Timer]
+OnCalendar=hourly
+Persistent=true
+RandomizedDelaySec=300
+
+[Install]
+WantedBy=timers.target

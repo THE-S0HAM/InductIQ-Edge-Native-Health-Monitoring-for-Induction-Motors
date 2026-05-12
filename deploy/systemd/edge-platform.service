@@ -1,0 +1,45 @@
+[Unit]
+Description=Industrial Edge AI Platform
+Documentation=https://github.com/edge-ai/platform
+After=network.target mosquitto.service
+Wants=mosquitto.service
+StartLimitIntervalSec=300
+StartLimitBurst=5
+
+[Service]
+Type=simple
+User=edgeai
+Group=edgeai
+WorkingDirectory=/opt/edge-ai
+Environment=EDGE_CONFIG_PATH=/etc/edge-ai/platform.yaml
+Environment=EDGE_API_KEY=changeme-in-production
+ExecStart=/opt/edge-ai/.venv/bin/python -m edge_platform
+ExecReload=/bin/kill -HUP $MAINPID
+Restart=always
+RestartSec=10
+TimeoutStartSec=30
+TimeoutStopSec=30
+
+# Resource limits (optimized for RPi 3B+ with 1GB RAM)
+MemoryMax=512M
+MemoryHigh=400M
+CPUQuota=80%
+TasksMax=64
+
+# Security hardening
+NoNewPrivileges=yes
+ProtectSystem=strict
+ProtectHome=yes
+ReadWritePaths=/var/lib/edge-ai /var/log/edge-ai
+PrivateTmp=yes
+
+# Watchdog
+WatchdogSec=120
+
+# Logging
+StandardOutput=journal
+StandardError=journal
+SyslogIdentifier=edge-platform
+
+[Install]
+WantedBy=multi-user.target

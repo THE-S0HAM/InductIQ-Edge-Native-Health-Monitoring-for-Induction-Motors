@@ -1,0 +1,14 @@
+[Unit]
+Description=Edge AI Data Archival Service
+After=edge-platform.service
+
+[Service]
+Type=oneshot
+User=edgeai
+Group=edgeai
+WorkingDirectory=/opt/edge-ai
+Environment=EDGE_CONFIG_PATH=/etc/edge-ai/platform.yaml
+ExecStart=/opt/edge-ai/.venv/bin/python -m edge_platform.storage.archive_runner
+MemoryMax=256M
+CPUQuota=50%
+TimeoutStartSec=600
